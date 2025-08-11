@@ -9,6 +9,9 @@ VIRTUAL_HEIGHT = 720
 
 scale = 1
 
+offsetX = 0
+offsetY = 0
+
 enemySet = nil
 
 local background = love.graphics.newImage("background.png")
@@ -37,8 +40,8 @@ function love.draw()
 	local scaleY = screenH / VIRTUAL_HEIGHT
 	scale = math.min(scaleX, scaleY)
 	
-	local offsetX = (screenW - VIRTUAL_WIDTH * scale) / 2
-	local offsetY = (screenH - VIRTUAL_HEIGHT * scale) / 2
+	offsetX = (screenW - VIRTUAL_WIDTH * scale) / 2
+	offsetY = (screenH - VIRTUAL_HEIGHT * scale) / 2
 	
 	love.graphics.push()
 	love.graphics.translate(offsetX,offsetY)
@@ -57,7 +60,7 @@ function love.draw()
 end
 
 local function getVirtualCoords(x, y)
-    return x / scale, y / scale
+    return x / scale + offsetX, y / scale + offsetY
 end
 
 function love.mousepressed(x, y, button)

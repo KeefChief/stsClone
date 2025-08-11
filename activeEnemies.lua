@@ -33,7 +33,7 @@ end
 
 function activeEnemies:isMouseOver()
 local x, y = love.mouse.getPosition()
-x, y = x / scale, y / scale
+x, y = x / scale + offsetX, y / scale + offsetY
 	for i = #self.currentEnemies, 1, -1 do
 		local enemy = self.currentEnemies[i]
 		if x >= enemy.x and x <= enemy.x + enemy.enemyW 
