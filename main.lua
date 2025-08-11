@@ -20,7 +20,7 @@ function love.load()
 	math.randomseed(os.time())
 	math.random()
 	enemySet = activeEnemies.newSet()
-	love.window.setMode(1920,1080)
+	love.window.setMode(1400,720)
 	print("Game Loaded!")
 	player.init()
 	print(#player.deck)
@@ -59,8 +59,8 @@ function love.draw()
 	love.graphics.pop()
 end
 
-local function getVirtualCoords(x, y)
-    return (x - offsetX) / scale, (y + offsetY)/ scale
+function getVirtualCoords(x, y)
+    return (x - offsetX) / scale, (y - offsetY)/ scale
 end
 
 function love.mousepressed(x, y, button)

@@ -58,8 +58,7 @@ function Hand:addCard(card)
 end
 
 function Hand:update(dt)
-	local mouseX, mouseY = love.mouse.getPosition()
-	mouseX, mouseY = mouseX / scale, mouseY / scale
+	local mouseX, mouseY = getVirtualCoords(love.mouse.getPosition())
 	local hoveredIndex = nil
 	
 	if not self.draggingCard then
