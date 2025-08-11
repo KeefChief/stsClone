@@ -4,6 +4,11 @@ local enemies = require("enemies")
 local Enemy = require("Enemy")
 local activeEnemies = require("activeEnemies")
 
+VIRTUAL_WIDTH = 1280
+VIRTUAL_HEIGHT = 720
+
+scale = 1
+
 enemySet = nil
 
 local background = love.graphics.newImage("background.png")
@@ -12,7 +17,7 @@ function love.load()
 	math.randomseed(os.time())
 	math.random()
 	enemySet = activeEnemies.newSet()
-	love.window.setMode(1280,720)
+	love.window.setMode(1920,1080)
 	print("Game Loaded!")
 	player.init()
 	print(#player.deck)
@@ -27,6 +32,14 @@ function love.update(dt)
 end
 
 function love.draw()
+	local screenW, screenH = love.graphics.getDimensions()
+	local scaleX = screenW / VIRTUAL_WIDTH
+	local scaleY = screenH / VIRTUAL_HEIGHT
+	scale = math.min(scaleX, scaleY)
+	
+	love.graphics.push()
+	love.graphics.scale(scale, scale)
+	
 	love.graphics.print(#player.deck)
 	love.graphics.print(#player.hand.cards, 0, 12)
 	love.graphics.draw(background)
@@ -35,12 +48,20 @@ function love.draw()
 	enemySet:isMouseOver()
 	player.hand:draw()
 	player.draw()
+	
+	love.graphics.pop()
+end
+
+local function getVirtualCoords(x, y)
+    return x / scale, y / scale
 end
 
 function love.mousepressed(x, y, button)
-    player.hand:mousepressed(x, y, button)
+    local vx, vy = getVirtualCoords(x, y)
+    player.hand:mousepressed(vx, vy, button)
 end
 
 function love.mousereleased(x, y, button)
-    player.hand:mousereleased(x, y, button)
+    local vx, vy = getVirtualCoords(x, y)
+    player.hand:mousereleased(vx, vy, button)
 end

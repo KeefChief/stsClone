@@ -33,8 +33,8 @@ function Hand:layout()
 	local curveStrength = 5
 	local centerIndex = (handCount + 1) / 2
     local spacing = maxSpacing - handCount * 4
-    local screenW = love.graphics.getWidth()
-    local screenH = love.graphics.getHeight()
+    local screenW = VIRTUAL_WIDTH
+    local screenH = VIRTUAL_HEIGHT
     local totalWidth = (handCount - 1) * spacing + cardW
     local startX = (screenW - totalWidth) / 2
 
@@ -52,13 +52,14 @@ function Hand:addCard(card)
 	self.yOffsets[#self.cards] = 0
 	self.targetOffsets[#self.cards] = 0
 	card.x = -cardW
-	card.y = love.graphics.getHeight() - cardH
+	card.y = VIRTUAL_HEIGHT - cardH
 	card.targetX = 0
 	card.targetY = 0
 end
 
 function Hand:update(dt)
 	local mouseX, mouseY = love.mouse.getPosition()
+	mouseX, mouseY = mouseX / scale, mouseY / scale
 	local hoveredIndex = nil
 	
 	if not self.draggingCard then
@@ -87,9 +88,9 @@ function Hand:update(dt)
 end
 
 function Hand:draw()
-	for _,card in ipairs(self.cards) do
+	for _,card in ipairs(self.cards) do	
 		love.graphics.draw(card.image, card.x, card.y,0,0.7,0.7)
-		love.graphics.printf(card.name, card.x, card.y + cardH / 2 - 6, cardW, "center")
+		love.graphics.printf(card.name, card.x, card.y + cardH / 2 - 6, cardW, "center")		
     end
 end
 
