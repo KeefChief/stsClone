@@ -60,7 +60,7 @@ function love.draw()
 end
 
 local function getVirtualCoords(x, y)
-    return x / scale + offsetX, y / scale + offsetY
+    return (x - offsetX) / scale, (y + offsetY)/ scale
 end
 
 function love.mousepressed(x, y, button)
