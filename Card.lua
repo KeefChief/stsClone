@@ -12,7 +12,8 @@ function Card.new(cardName)
 	cost = proto.cost,
 	description = proto.description,
 	effect = proto.effect,
-	image = proto.image
+	image = proto.image,
+	targetType = proto.targetType
 	}
 	
 	setmetatable(instance,Card)

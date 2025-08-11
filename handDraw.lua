@@ -1,19 +1,24 @@
+local cardLogic = require("cardLogic")
+local activeEnemies = require("activeEnemies")
+
 local Hand = {}
 Hand.__index = Hand
+
 
 local cardW = 112
 local cardH = 168
 local hoverOffset = -30
 local lerpSpeed = 10
-local maxSpacing = 120
+local maxSpacing = 100
 
 local draggedCardIndex = nil
 local dragOffsetX = 0
 local dragOffsetY = 0
 
-function Hand.new()
+function Hand.new(player)
 	return setmetatable({
 	cards = {},
+	player = player,
 	x,
 	y,
 	targetX,
@@ -93,6 +98,7 @@ function Hand:mousepressed(x, y, button)
         for i = #self.cards, 1, -1 do
             local card = self.cards[i]
             if x >= card.x and x <= card.x + cardW and y >= card.y and y <= card.y + cardH then
+				lerpSpeed = 20
                 self.draggingCard = i
                 self.dragOffsetX = x - card.x
                 self.dragOffsetY = y - card.y
@@ -104,6 +110,20 @@ end
 
 function Hand:mousereleased(x, y, button)
     if button == 1 and self.draggingCard then
+		local card = self.cards[self.draggingCard]
+		if card.targetType == "player" and y < 500 then
+			cardLogic.playCard(self.player, nil, card) 
+		elseif card.targetType == "enemy" or  card. targetType == "both" then
+			for i = #enemySet.currentEnemies, 1, -1 do
+				local enemy = enemySet.currentEnemies[i]
+				if x >= enemy.x and x <= enemy.x + enemy.enemyW 
+				and y >= enemy.y and y <= enemy.y + enemy.enemyH then
+					cardLogic.playCard(self.player, enemy, card)
+					break
+				end
+			end
+		end
+		lerpSpeed = 10
         self.draggingCard = nil
 		self:layout()
     end
