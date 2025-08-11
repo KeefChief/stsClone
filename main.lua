@@ -37,7 +37,11 @@ function love.draw()
 	local scaleY = screenH / VIRTUAL_HEIGHT
 	scale = math.min(scaleX, scaleY)
 	
+	local offsetX = (screenW - VIRTUAL_WIDTH * scale) / 2
+	local offsetY = (screenH - VIRTUAL_HEIGHT * scale) / 2
+	
 	love.graphics.push()
+	love.graphics.translate(offsetX,offsetY)
 	love.graphics.scale(scale, scale)
 	
 	love.graphics.print(#player.deck)
