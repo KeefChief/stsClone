@@ -13,7 +13,8 @@ function Card.new(cardName)
 	description = proto.description,
 	effect = proto.effect,
 	image = proto.image,
-	targetType = proto.targetType
+	targetType = proto.targetType,
+	isDiscarding = false
 	}
 	
 	setmetatable(instance,Card)

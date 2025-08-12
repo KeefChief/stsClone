@@ -66,29 +66,51 @@ function turnManager:update()
 	else
 		self.endTurnButtonImage = self.endTurnButtonBaseImage
 	end
-	
-	self.enemyCooldown = self.enemyCooldown - dt
 end
 
 function turnManager:endPlayerTurn()
+	for i = 1, #player.hand.cards do
+		table.insert(player.discardPile,player.hand.cards[i])
+	end
+		
+	for i = #player.hand.cards, 1, -1 do
+		player.hand.cards[i] = nil
+	end
+
 	self.isPlayerTurn = false
 	self:startEnemyTurn()
 end
 
 function turnManager:startEnemyTurn()
-	for i, enemy in ipairs(enemySet.currentEnemies) do
-		if enemy.attackType == "random" then
-			local attack = math.random(1, #enemy.randomAttackList)
-			enemy.randomAttackList[attack](player, enemies)
+	self.timer = 0.7
+	self.index = 1
+	self.isEnemyTurn = true
+end
+
+function turnManager:handleEnemyTurn(dt)
+	local delay = 0.7
+	if self.isEnemyTurn then
+		self.timer = self.timer - dt
+		if self.timer <= 0 then
+			local enemy = enemySet.currentEnemies[self.index]
+			if enemy then
+				if enemy.attackType == "random" then
+					local attack = math.random(1, #enemy.randomAttackList)
+					enemy.randomAttackList[attack](player, enemies)
+				end
+				self.index = self.index + 1
+				self.timer = delay
+			end
+			self.isEnemyTurn = false
+			self:startPlayerTurn()
 		end
-	end
-	self:startPlayerTurn()
+	end	
 end
 
 function turnManager:startPlayerTurn()
 	self.isPlayerTurn = true
 	player.energy = player.maxEnergy
-	player.drawCards(2)
+	player.drawCards(5)
 end
 
 return turnManager

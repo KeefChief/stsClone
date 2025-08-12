@@ -63,6 +63,7 @@ function player:refillDeck()
 
 		for i = 1, #self.discardPile do
 			table.insert(self.deck,self.discardPile[i])
+			self.hand:layout()
 		end
 		
 		for i = #self.discardPile, 1, -1 do
