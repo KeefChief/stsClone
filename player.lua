@@ -78,6 +78,8 @@ function player.draw()
 	local pH = player.image:getHeight()
 	local energyX = 70
 	local energyY = VIRTUAL_HEIGHT - 120
+	love.graphics.setColor(0.2,0,0,1)
+	love.graphics.rectangle("fill", player.x + 21, player.y + pH, player.maxHp * 2, healthBarH)
 	love.graphics.setColor(1,0.2,0.2,1)
 	love.graphics.rectangle("fill", player.x + 21 , player.y + pH, player.hp * 2, healthBarH)
 	love.graphics.setColor(1,1,1,1)

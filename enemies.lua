@@ -20,7 +20,7 @@ enemyW = 82,
 enemyH = 161,
 attackType = "random",
 randomAttackList = {
-function(player)
+slash = function(player)
 	if player.block > 0 then
 		enemies.dealBlock(5, player)
 	else

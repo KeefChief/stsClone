@@ -18,7 +18,19 @@ function Enemy.new(enemyName)
 	enemyH = proto.enemyH,
 	attackType = proto.attackType,
 	randomAttackList = proto.randomAttackList,
-	attackCooldown = 0.7
+	attackCooldown = 0.7,
+	isAttacking = false,
+	targetX = 0,
+	targetY = 0,
+	attackAnim = {
+	elapsed = 0, 
+	forwardDuration = 0.01,
+	backwardDuration = 0.1,
+	startX = 0,
+	endX = 0,
+	phase = "forward"
+	},
+	nextAttack = nil
 	}
 	
 	setmetatable(instance, Enemy)

@@ -21,7 +21,6 @@ function turnManager:init()
 	self.endTurnButtonBaseImage:setFilter("nearest", "nearest")
 	self.endTurnButtonHoveredImage:setFilter("nearest", "nearest")
 	self.endTurnButtonClickedImage:setFilter("nearest", "nearest")
-	
 end
 
 function turnManager:draw()
@@ -47,9 +46,7 @@ function turnManager:mousereleased(x, y, button)
 	self.buttonPressed = false
 end
 
--- helper function so you don't repeat the bounds check
 function turnManager:isMouseOverButton(x, y)
-	-- convert to virtual coords
 	local scaledWidth = self.endTurnButtonWidth * 0.5
 	local scaledHeight = self.endTurnButtonHeight * 0.5
 	return x >= self.endTurnButtonX and x <= self.endTurnButtonX + scaledWidth and
@@ -94,21 +91,36 @@ function turnManager:handleEnemyTurn(dt)
 		if self.timer <= 0 then
 			local enemy = enemySet.currentEnemies[self.index]
 			if enemy then
-				if enemy.attackType == "random" then
-					local attack = math.random(1, #enemy.randomAttackList)
-					enemy.randomAttackList[attack](player, enemies)
-				end
+				local attack = enemy.nextAttack
+				enemy.nextAttack(player, enemies)
+				enemy.isAttacking = true
+				enemy.attackAnim = {
+				elapsed = 0,
+				forwardDuration = 0.05,
+				backwardDuration = 0.2,
+				startX = enemy.x,
+				endX = enemy.x - 50,
+				phase = "forward"
+				}
+				
 				self.index = self.index + 1
 				self.timer = delay
+			else
+				self.isEnemyTurn = false
+				self:startPlayerTurn()
 			end
-			self.isEnemyTurn = false
-			self:startPlayerTurn()
 		end
 	end	
 end
 
 function turnManager:startPlayerTurn()
+	for i, enemy in ipairs(enemySet.currentEnemies) do
+		if enemy.attackType == "random" then
+			enemy.nextAttack = enemy.randomAttackList[math.random(1, #enemy.randomAttackList)]
+		end
+	end
 	self.isPlayerTurn = true
+	player.block = 0
 	player.energy = player.maxEnergy
 	player.drawCards(5)
 end

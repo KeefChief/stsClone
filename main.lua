@@ -4,6 +4,7 @@ local enemies = require("enemies")
 local Enemy = require("Enemy")
 local activeEnemies = require("activeEnemies")
 local turnManager = require("turnManager")
+local battleManager = require("battleManager")
 
 VIRTUAL_WIDTH = 1280
 VIRTUAL_HEIGHT = 720
@@ -18,23 +19,23 @@ local background = love.graphics.newImage("background.png")
 function love.load()
 	math.randomseed(os.time())
 	math.random()
-	enemySet = activeEnemies.newSet()
+	battleManager:startBattle()
 	love.window.setMode(1400,720)
 	print("Game Loaded!")
 	player.init()
 	print(#player.deck)
-	player.drawCards(5)
 	enemySet:addEnemy(Enemy.new("Goblin"), 950, 170)
 	enemySet:addEnemy(Enemy.new("Goblin"), 950, 320)
 	bigFont = love.graphics.newFont(24)
 	defaultFont = love.graphics.getFont()
 	turnManager:init()
+	turnManager:startPlayerTurn()
 end
 
 function love.update(dt)
 	player.hand:layout()
 	player.hand:update(dt)
-	enemySet:update()
+	enemySet:update(dt)
 	enemySet:isMouseOver()
 	turnManager:update()
 	turnManager:handleEnemyTurn(dt)
@@ -80,4 +81,8 @@ function love.mousereleased(x, y, button)
     local vx, vy = getVirtualCoords(x, y)
     player.hand:mousereleased(vx, vy, button)
 	turnManager:mousereleased(vx,vy,button)
+end
+
+function lerp(a, b, t)
+  return a + (b - a) * t
 end

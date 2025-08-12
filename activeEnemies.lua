@@ -11,13 +11,14 @@ function activeEnemies.newSet()
 	y}, activeEnemies)
 end
 
-function activeEnemies:update()
+function activeEnemies:update(dt)
 	for i = #self.currentEnemies, 1, -1 do
 		local enemy = self.currentEnemies[i]
 		if enemy.hp <= 0 then
 			table.remove(self.currentEnemies, i)
 		end
 	end
+	self:animateEnemies(dt)
 end
 
 function activeEnemies:addEnemy(enemy, x, y)
@@ -60,6 +61,36 @@ function activeEnemies:isMouseOver()
 			enemy.image = enemy.outlinedImage
 		else
 			enemy.image = enemy.baseImage
+		end
+	end
+end
+
+function activeEnemies:animateEnemies(dt)
+	for i, enemy in ipairs(self.currentEnemies) do
+		if enemy.isAttacking then			
+			local anim = enemy.attackAnim
+			anim.elapsed = anim.elapsed + dt
+			
+			if anim.phase == "forward" then
+				local t = anim.elapsed / anim.forwardDuration
+				if t > 1 then t = 1 end
+				
+				enemy.x = lerp(anim.startX, anim.endX, t)
+				if t == 1 then
+					anim.phase = "backward"
+					anim.elapsed = 0
+				end
+			elseif anim.phase == "backward" then
+				local t = anim.elapsed / anim.backwardDuration
+				if t > 1 then t = 1 end
+				
+				enemy.x = lerp(anim.endX, anim.startX, t)
+				
+				if t == 1 then
+					enemy.x = anim.startX
+					enemy.isAttacking = false
+				end
+			end
 		end
 	end
 end
