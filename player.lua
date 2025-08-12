@@ -1,6 +1,8 @@
 local cards = require("cards")
 local Hand = require("handDraw")
 local Card = require("Card")
+local relicsLogic = require("relicsLogic")
+local Relics = require("Relics")
 
 local player = {
 maxHp = 0,
@@ -12,7 +14,7 @@ block = 0,
 deck = {},
 hand = nil,
 discardPile = {},
-relics = {},
+relics = {Relics["tungsten bar"]},
 image = love.graphics.newImage("player.png"),
 shieldImage = love.graphics.newImage("shield.png"),
 energyIcon = love.graphics.newImage("energy.png"),
@@ -93,6 +95,22 @@ function player.draw()
 	love.graphics.setFont(bigFont)
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.setFont(defaultFont)
+end
+
+function player:takeDamage(damage)
+	damage = relicsLogic:beforeDamageEffects(self, damage)
+	local damageToBlock = math.min(self.block, damage)
+	player.block = player.block - damageToBlock
+	damage = damage - damageToBlock
+	if damage > 0 then
+		player.hp = player.hp - damage
+	end
+	relicsLogic:onDamageEffects(player)
+end
+
+function player:heal(amount) 
+	local healthToHeal = math.min(amount, self.maxHp - self.hp)
+	self.hp = self.hp + healthToHeal
 end
 
 return player

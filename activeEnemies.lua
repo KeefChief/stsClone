@@ -37,6 +37,8 @@ function activeEnemies:draw()
 		love.graphics.rectangle("fill", healthBarX, enemy.y, enemy.hp * 3, 13)
 		love.graphics.setColor(1,1,0.2,1)
 		love.graphics.printf(enemy.hp .. "/" .. enemy.maxHp, healthBarX, enemy.y - 1, enemy.maxHp * 3, "center")
+		love.graphics.setColor(1, 1,0.2,1)
+		love.graphics.printf(enemy.nextAttack.name, enemy.x, enemy.y - 20, enemy.enemyW, "center")
 		love.graphics.setColor(1,1,1,1)
 	end
 end

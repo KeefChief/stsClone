@@ -92,7 +92,7 @@ function turnManager:handleEnemyTurn(dt)
 			local enemy = enemySet.currentEnemies[self.index]
 			if enemy then
 				local attack = enemy.nextAttack
-				enemy.nextAttack(player, enemies)
+				enemy.nextAttack.func(player, enemies)
 				enemy.isAttacking = true
 				enemy.attackAnim = {
 				elapsed = 0,
