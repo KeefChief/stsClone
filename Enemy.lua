@@ -15,7 +15,10 @@ function Enemy.new(enemyName)
 	x = 0,
 	y = 0,
 	enemyW = proto.enemyW,
-	enemyH = proto.enemyH
+	enemyH = proto.enemyH,
+	attackType = proto.attackType,
+	randomAttackList = proto.randomAttackList,
+	attackCooldown = 0.7
 	}
 	
 	setmetatable(instance, Enemy)

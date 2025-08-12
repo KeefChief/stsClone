@@ -1,10 +1,14 @@
 local player = require("player")
+local activeEnemies = require("activeEnemies")
+local enemies = require("enemies")
 
 local turnManager = {}
 turnManager.__index = turnManager
 
 function turnManager:init()
 	self.isPlayerTurn = true
+	self.isEnemyTurn = false
+	self.enemyCooldown = 0
 	self.endTurnButtonX = 1100
 	self.endTurnButtonY = 600
 	self.endTurnButtonWidth = 291
@@ -62,6 +66,8 @@ function turnManager:update()
 	else
 		self.endTurnButtonImage = self.endTurnButtonBaseImage
 	end
+	
+	self.enemyCooldown = self.enemyCooldown - dt
 end
 
 function turnManager:endPlayerTurn()
@@ -70,6 +76,12 @@ function turnManager:endPlayerTurn()
 end
 
 function turnManager:startEnemyTurn()
+	for i, enemy in ipairs(enemySet.currentEnemies) do
+		if enemy.attackType == "random" then
+			local attack = math.random(1, #enemy.randomAttackList)
+			enemy.randomAttackList[attack](player, enemies)
+		end
+	end
 	self:startPlayerTurn()
 end
 
