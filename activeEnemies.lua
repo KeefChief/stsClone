@@ -11,6 +11,15 @@ function activeEnemies.newSet()
 	y}, activeEnemies)
 end
 
+function activeEnemies:update()
+	for i = #self.currentEnemies, 1, -1 do
+		local enemy = self.currentEnemies[i]
+		if enemy.hp <= 0 then
+			table.remove(self.currentEnemies, i)
+		end
+	end
+end
+
 function activeEnemies:addEnemy(enemy, x, y)
 	table.insert(self.currentEnemies, enemy)
 	enemy.x = x
@@ -32,14 +41,23 @@ function activeEnemies:draw()
 end
 
 function activeEnemies:isMouseOver()
-local x, y = love.mouse.getPosition()
-x, y = (x - offsetX) / scale, (y - offsetY) / scale
+	local x, y = love.mouse.getPosition()
+	x, y = (x - offsetX) / scale, (y - offsetY) / scale
+
+	local hoveredEnemy = nil
+	
 	for i = #self.currentEnemies, 1, -1 do
 		local enemy = self.currentEnemies[i]
 		if x >= enemy.x and x <= enemy.x + enemy.enemyW 
 		and y >= enemy.y and y <= enemy.y + enemy.enemyH then
-			enemy.image = enemy.outlinedImage
+			hoveredEnemy = enemy
 			break
+		end
+	end
+	
+	for _,enemy in ipairs(self.currentEnemies) do
+		if enemy == hoveredEnemy then
+			enemy.image = enemy.outlinedImage
 		else
 			enemy.image = enemy.baseImage
 		end

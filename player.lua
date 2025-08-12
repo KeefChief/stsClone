@@ -15,6 +15,7 @@ discardPile = {},
 relics = {},
 image = love.graphics.newImage("player.png"),
 shieldImage = love.graphics.newImage("shield.png"),
+energyIcon = love.graphics.newImage("energy.png"),
 x = 150,
 y = 140
 }
@@ -50,12 +51,21 @@ function player.draw()
 	local healthBarH = 13
 	local healthBarW = player.maxHp * 2
 	local pH = player.image:getHeight()
+	local energyX = 70
+	local energyY = VIRTUAL_HEIGHT - 120
 	love.graphics.setColor(1,0.2,0.2,1)
 	love.graphics.rectangle("fill", player.x + 21 , player.y + pH, player.hp * 2, healthBarH)
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.printf(player.hp .. "/" .. player.maxHp, player.x + 21, player.y + pH - 1, healthBarW, "center")
 	love.graphics.draw(player.shieldImage,player.x + 15, player.y + pH - 8, 0, 0.12, 0.12)
 	love.graphics.printf(player.block,player.x + 15, player.y + pH - 2,29,"center")
+	love.graphics.draw(player.energyIcon, energyX, energyY,0,0.3,0.3)
+	love.graphics.setColor(1,1,0.2,1)
+	love.graphics.setFont(bigFont)
+	love.graphics.printf(player.energy .. "/" .. player.maxEnergy, energyX, energyY + 31, 72, "center")
+	love.graphics.setFont(bigFont)
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.setFont(defaultFont)
 end
 
 return player

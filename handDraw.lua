@@ -7,6 +7,8 @@ Hand.__index = Hand
 
 local cardW = 112
 local cardH = 168
+local normalCardW = 160
+local normalCardH = 240
 local hoverOffset = -30
 local lerpSpeed = 10
 local maxSpacing = 100
@@ -30,7 +32,7 @@ end
 
 function Hand:layout()
 	local handCount = #self.cards
-	local curveStrength = 5
+	local curveStrength = 3
 	local centerIndex = (handCount + 1) / 2
     local spacing = maxSpacing - handCount * 4
     local screenW = VIRTUAL_WIDTH
@@ -62,7 +64,8 @@ function Hand:update(dt)
 	local hoveredIndex = nil
 	
 	if not self.draggingCard then
-		for i, card in ipairs(self.cards) do				
+		for i = #self.cards, 1, -1 do
+			local card = self.cards[i]
 			if mouseX >= card.x and mouseX <= card.x + cardW and mouseY >= card.y and mouseY <= card.y + cardH then
 			hoveredIndex = i 
 				break
@@ -70,7 +73,10 @@ function Hand:update(dt)
 		end
 	end
 	
-	for i, card in ipairs(self.cards) do
+	self.hoveredIndex = hoveredIndex
+	
+	for i = #self.cards, 1, -1 do
+		local card = self.cards[i]
 		if self.draggingCard == i then
 			card.targetX = mouseX - self.dragOffsetX
 			card.targetY = mouseY - self.dragOffsetY
@@ -87,10 +93,24 @@ function Hand:update(dt)
 end
 
 function Hand:draw()
-	for _,card in ipairs(self.cards) do	
-		love.graphics.draw(card.image, card.x, card.y,0,0.7,0.7)
-		love.graphics.printf(card.name, card.x, card.y + cardH / 2 - 6, cardW, "center")		
+	for i,card in ipairs(self.cards) do	
+		if i ~= self.hoveredIndex then
+			love.graphics.draw(card.image, card.x, card.y,0,0.7,0.7)
+			love.graphics.push()
+			love.graphics.translate(card.x, card.y + cardH * scale / 2 - 6)
+			love.graphics.scale(0.7,0.7)
+			love.graphics.printf(card.name,0,0, cardW * (1 / 0.7), "center")	
+			love.graphics.pop()
+		end
     end
+	
+	if self.hoveredIndex then
+		local card = self.cards[self.hoveredIndex]
+		local cx = card.x + cardW / 2
+		local cy = card.y + cardH / 2
+		love.graphics.draw(card.image, cx, cy,0,1,1, normalCardW / 2, normalCardH / 2)
+		love.graphics.printf(card.name, card.x, card.y + cardH / 2 - 6, cardW, "center")	
+	end
 end
 
 function Hand:mousepressed(x, y, button)

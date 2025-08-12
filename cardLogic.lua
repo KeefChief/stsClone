@@ -2,17 +2,21 @@ local cardLogic = {}
 
 function cardLogic.playCard(player,target,card)
 	for i, c in ipairs(player.hand.cards) do
-		if c == card then
+		if c == card and player.energy >= card.cost then
 			table.remove(player.hand.cards, i)
 			break
 		end
 	end
-	if card.targetType == "player" then
-		card.effect(player)
-	elseif card.targetType == "enemy" then
-		card.effect(target)
-	elseif card.targetType == "both" then
-		card.effect(player, target)
+	
+	if player.energy >= card.cost then
+		if card.targetType == "player" then
+			card.effect(player)
+		elseif card.targetType == "enemy" then
+			card.effect(target)
+		elseif card.targetType == "both" then
+			card.effect(player, target)
+		end
+		player.energy = player.energy - card.cost
 	end
 end
 
