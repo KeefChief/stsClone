@@ -3,15 +3,14 @@ local Hand = require("handDraw")
 local enemies = require("enemies")
 local Enemy = require("Enemy")
 local activeEnemies = require("activeEnemies")
+local turnManager = require("turnManager")
 
 VIRTUAL_WIDTH = 1280
 VIRTUAL_HEIGHT = 720
 
-scale = 1
-
-offsetX = 0
-offsetY = 0
-
+_G.scale = 1
+_G.offsetX = 0
+_G.offsetY = 0
 enemySet = nil
 
 local background = love.graphics.newImage("background.png")
@@ -29,6 +28,7 @@ function love.load()
 	enemySet:addEnemy(Enemy.new("Goblin"), 950, 320)
 	bigFont = love.graphics.newFont(24)
 	defaultFont = love.graphics.getFont()
+	turnManager:init()
 end
 
 function love.update(dt)
@@ -36,6 +36,7 @@ function love.update(dt)
 	player.hand:update(dt)
 	enemySet:update()
 	enemySet:isMouseOver()
+	turnManager:update()
 end
 
 function love.draw()
@@ -51,13 +52,15 @@ function love.draw()
 	love.graphics.translate(offsetX,offsetY)
 	love.graphics.scale(scale, scale)
 	
-	love.graphics.print(#player.deck)
-	love.graphics.print(#player.hand.cards, 0, 12)
 	love.graphics.draw(background)
 	love.graphics.draw(player.image,player.x, player.y)
 	enemySet:draw()
 	player.hand:draw()
 	player.draw()
+	turnManager:draw()
+	love.graphics.print(#player.deck)
+	love.graphics.print(#player.discardPile,0, 24)
+	love.graphics.print(#player.hand.cards, 0, 12)
 	
 	love.graphics.pop()
 end
@@ -69,9 +72,11 @@ end
 function love.mousepressed(x, y, button)
     local vx, vy = getVirtualCoords(x, y)
     player.hand:mousepressed(vx, vy, button)
+	turnManager:mousepressed(vx,vy,button)
 end
 
 function love.mousereleased(x, y, button)
     local vx, vy = getVirtualCoords(x, y)
     player.hand:mousereleased(vx, vy, button)
+	turnManager:mousereleased(vx,vy,button)
 end

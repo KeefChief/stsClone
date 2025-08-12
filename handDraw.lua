@@ -32,7 +32,7 @@ end
 
 function Hand:layout()
 	local handCount = #self.cards
-	local curveStrength = 3
+	local maxCurve = 20
 	local centerIndex = (handCount + 1) / 2
     local spacing = maxSpacing - handCount * 4
     local screenW = VIRTUAL_WIDTH
@@ -42,8 +42,8 @@ function Hand:layout()
 
     for i, card in ipairs(self.cards) do
 		local distanceFromCenter = i - centerIndex
-		local curve = (distanceFromCenter ^ 2) * curveStrength
-		local baseY = screenH - cardH
+		local curveStrength = maxCurve / ((centerIndex - 1)^2)
+		local curve = (distanceFromCenter ^ 2) * curveStrength		local baseY = screenH - cardH
         card.targetX = startX + (i - 1) * spacing
         card.targetY = baseY + curve
 	end

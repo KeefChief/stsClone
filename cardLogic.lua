@@ -3,6 +3,7 @@ local cardLogic = {}
 function cardLogic.playCard(player,target,card)
 	for i, c in ipairs(player.hand.cards) do
 		if c == card and player.energy >= card.cost then
+			table.insert(player.discardPile, player.hand.cards[i])
 			table.remove(player.hand.cards, i)
 			break
 		end

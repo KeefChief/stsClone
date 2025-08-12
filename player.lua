@@ -40,10 +40,34 @@ end
 
 function player.drawCards(amount)
 	for i = 1, amount do
+		player:refillDeck()
+		
+		if #player.deck == 0 then
+			break
+		end 
+		
 		local index = math.random(1, #player.deck)
 		local card = player.deck[index]
 		local card = table.remove(player.deck, index)
 		player.hand:addCard(card)	
+	end
+end
+
+function player:refillDeck()
+
+	if #self.deck == 0 then
+		for i = #self.discardPile, 2, -1 do
+			local j = math.random(1, i)
+			self.discardPile[i], self.discardPile[j] = self.discardPile[j], self.discardPile[i]
+		end
+
+		for i = 1, #self.discardPile do
+			table.insert(self.deck,self.discardPile[i])
+		end
+		
+		for i = #self.discardPile, 1, -1 do
+			self.discardPile[i] = nil
+		end
 	end
 end
 
