@@ -1,3 +1,4 @@
+flux = require("flux")
 local player = require("player")
 local Hand = require("handDraw")
 local enemies = require("enemies")
@@ -5,6 +6,7 @@ local Enemy = require("Enemy")
 local activeEnemies = require("activeEnemies")
 local turnManager = require("turnManager")
 local battleManager = require("battleManager")
+local relicsLogic = require("relicsLogic")
 
 VIRTUAL_WIDTH = 1280
 VIRTUAL_HEIGHT = 720
@@ -20,7 +22,7 @@ function love.load()
 	math.randomseed(os.time())
 	math.random()
 	battleManager:startBattle()
-	love.window.setMode(1400,720)
+	love.window.setMode(1280,720)
 	print("Game Loaded!")
 	player.init()
 	print(#player.deck)
@@ -39,6 +41,8 @@ function love.update(dt)
 	enemySet:isMouseOver()
 	turnManager:update()
 	turnManager:handleEnemyTurn(dt)
+	player.hand:applyBuffs(player)
+	flux.update(dt)
 end
 
 function love.draw()
@@ -64,11 +68,17 @@ function love.draw()
 	love.graphics.print(#player.discardPile,0, 24)
 	love.graphics.print(#player.hand.cards, 0, 12)
 	
+	relicsLogic:draw(player)
+	
 	love.graphics.pop()
 end
 
 function getVirtualCoords(x, y)
     return (x - offsetX) / scale, (y - offsetY)/ scale
+end
+
+function getScreenCoords(vx, vy)
+    return vx * scale + offsetX, vy * scale + offsetY
 end
 
 function love.mousepressed(x, y, button)

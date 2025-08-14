@@ -114,6 +114,7 @@ function turnManager:handleEnemyTurn(dt)
 end
 
 function turnManager:startPlayerTurn()
+	relicsLogic:onStartOfTurnEffects(player)
 	for i, enemy in ipairs(enemySet.currentEnemies) do
 		if enemy.attackType == "random" then
 			enemy.nextAttack = enemy.randomAttackList[math.random(1, #enemy.randomAttackList)]

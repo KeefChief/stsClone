@@ -14,12 +14,13 @@ block = 0,
 deck = {},
 hand = nil,
 discardPile = {},
-relics = {Relics["tungsten bar"]},
+relics = {Relics["tungsten bar"], Relics["snecko eye"]},
 image = love.graphics.newImage("player.png"),
 shieldImage = love.graphics.newImage("shield.png"),
 energyIcon = love.graphics.newImage("energy.png"),
 x = 150,
-y = 140
+y = 140,
+strength = 2
 }
 
 function player.init()
@@ -53,6 +54,7 @@ function player.drawCards(amount)
 		local card = table.remove(player.deck, index)
 		player.hand:addCard(card)	
 	end
+	relicsLogic:onDraw(player)
 end
 
 function player:refillDeck()
